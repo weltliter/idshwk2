@@ -1,0 +1,14 @@
+#这个文件用于提交IDS的snort规则的相关作业
+
+
+#规则的要求如下：
+#if snort see two packets in a flow with
+#   first packet has “login” or “Initial” in payload, destination port is 3399;
+#   and second packet has a “IPv4Address:Port”string(E.g. 123.45.6.7:8080) in payload. destination port is 3399;
+#   output a alert with msg ”bot founded” and sid 1000001
+
+
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET 3399 (content:"login"; nocase; content:"Initial"; nocase; flowbits: set, is_bot_founded; flowbits: noalert; rev:1;)
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET 3399 (msg:" bot founded"; flowbits: isset, is_bot_founded; pcre:"((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}:\d+"; sid:1000001; rev:1;)
